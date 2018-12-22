@@ -225,7 +225,7 @@ for testNrIn in $listaTestow; do
       if [[ $sourceExt == "java" ]]; then
         java.exe $javaOpts $zad <$plikIn >$plikOut 2>$plikErr
       elif [[ $sourceExt == "kt" ]]; then
-        java.exe $javaOpts -cp '.;'"${KOTLINC%/*/*}"/lib/kotlin-runtime.jar programkt$zad <$plikIn >$plikOut 2>$plikErr
+        java.exe $javaOpts -cp '.;'"${KOTLINC%/*/*}"/lib/kotlin-runtime.jar programkt <$plikIn >$plikOut 2>$plikErr
       else
         if [[ $sysop == MINGW ]]; then
           if [[ $bDistributed == 1 ]]; then
