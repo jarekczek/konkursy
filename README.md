@@ -1,0 +1,2 @@
+# konkursy
+competitive programming
