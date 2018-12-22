@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#set -x
+PS4='${LINENO}:'
+
 # SPOSOB UZYCIA {{{
 # system dziala w oparciu o bash, na windowsie uzywamy msysa i mingw
 # na kazde zadanie katalog z nazwa zadania i do niego te pliki
@@ -24,8 +27,9 @@ function setIfNotSet() {
   eval if [[ ! '$'$1 ]]'; then '$1=$2'; fi'
 }
 
-sourceExt=cpp
+sourceExt=kt
 JDK=C:/lang/java/jdk_current_link/bin
+KOTLINC=C:/lang/kotlinc/bin/kotlinc
 
 # }}}
 # PROBLEM GENERATORS {{{
@@ -37,12 +41,12 @@ function genProb
     cp $f $1
   done
   touch $1/$1.$sourceExt
-  mkdir $1/testy
+    mkdir $1/testy
   echo "touched $1/$1.$sourceExt"
 }
 
 if [[ x$1 == xgencf ]]; then
-  for prob in a b c d e; do
+  for prob in A B C D E; do
     genProb $prob
   done
   exit 0
@@ -138,8 +142,11 @@ if [[ $bAsserts != 0 ]]; then
 fi
 
 if [[ $bCompile != 0 ]]; then
+  echo -n Kompilacja"... "
   if [[ $sourceExt == "java" ]]; then
     "${JDK}/javac.exe" $zad.java >$plikKompilacji 2>&1
+  elif [[ $sourceExt == "kt" ]]; then
+    "${KOTLINC}" $zad.kt >$plikKompilacji 2>&1
   else
 
     #CPP
@@ -160,7 +167,7 @@ if [[ $bCompile != 0 ]]; then
     # pause
     exit
   else
-    echo kompilacja ok
+    echo ok
   fi;
 fi
 
@@ -217,6 +224,8 @@ for testNrIn in $listaTestow; do
   
       if [[ $sourceExt == "java" ]]; then
         java.exe $javaOpts $zad <$plikIn >$plikOut 2>$plikErr
+      elif [[ $sourceExt == "kt" ]]; then
+        java.exe $javaOpts -cp '.;'"${KOTLINC%/*/*}"/lib/kotlin-runtime.jar programkt$zad <$plikIn >$plikOut 2>$plikErr
       else
         if [[ $sysop == MINGW ]]; then
           if [[ $bDistributed == 1 ]]; then
